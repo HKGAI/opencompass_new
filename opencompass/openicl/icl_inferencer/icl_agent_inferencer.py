@@ -27,6 +27,7 @@ class AgentInferencer(BaseInferencer):
             output_json_filepath: Optional[str] = './icl_inference_output',
             output_json_filename: Optional[str] = 'predictions',
             save_every: Optional[int] = 1,
+            example: Optional[str] = None,
             **kwargs) -> None:
         super().__init__(
             model=model,
@@ -35,6 +36,10 @@ class AgentInferencer(BaseInferencer):
             **kwargs,
         )
         self.save_every = save_every
+        # example in agent usage for protocol illustration
+        self.example = example
+        if example:
+            self.agent.add_example(example)
 
     @property
     def agent(self):
@@ -72,8 +77,13 @@ class AgentInferencer(BaseInferencer):
         logger.info('Starting inference process...')
         for idx, ice_indices in tqdm(enumerate(ice_idx_list[start:], start),
                                      disable=not self.is_main_process):
-            user_input = retriever.generate_prompt_for_generate_task(
-                idx, ice='', prompt_template=prompt_template)
+            # TODO: This will break the Prompt template
+            # get user input directly without formatting prompt
+            #
+            # user_input = retriever.generate_prompt_for_generate_task(
+            #     idx, ice='', prompt_template=prompt_template)
+            user_input = retriever.dataset_reader.dataset['test'][
+                retriever.dataset_reader.input_columns[0]][idx]
             gold = retriever.dataset_reader.dataset['test'][
                 retriever.dataset_reader.output_column][idx]
 
