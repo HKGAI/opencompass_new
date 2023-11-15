@@ -6,7 +6,7 @@ with read_base():
     from .configs.summarizers.groups.ceval import ceval_summary_groups
 
 dataset_abbrs=[
-'------- MMLU details -------',  
+'------- MMLU details -------', 
 'mmlu-humanities',
 'mmlu-stem',
 'mmlu-social-science',
@@ -48,12 +48,6 @@ dataset_abbrs=[
 'ceval-humanities',
 'ceval-other',
 'ceval-hard',
-'ceval-test-stem',
-'ceval-test-social-science',
-'ceval-test-humanities',
-'ceval-test-other',
-'ceval-test-hard',
-'ceval-test',
 
 'cmmlu',
 'cmmlu-humanities',
