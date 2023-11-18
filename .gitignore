@@ -1,18 +1,18 @@
 
-output_*/
-outputs/
-icl_inference_output/
+#output_*/
+#outputs/
+#icl_inference_output/
 .vscode/
 tmp/
-configs/openai_key.py
-configs/secrets.py
-configs/datasets/log.json
-configs/eval_debug*.py
-configs/viz_*.py
-data
-work_dirs
-configs/internal/
-human-eval
+#configs/openai_key.py
+#configs/secrets.py
+#configs/datasets/log.json
+#configs/eval_debug*.py
+#configs/viz_*.py
+#data
+#work_dirs
+#configs/internal/
+#human-eval
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -23,12 +23,12 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
+#.Python
+#build/
+#develop-eggs/
+#dist/
+#downloads/
+#eggs/
 .eggs/
 lib/
 lib64/
@@ -68,12 +68,12 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
-local_settings.py
-db.sqlite3
+#*.log
+#local_settings.py
+#db.sqlite3
 
 # Flask stuff:
-instance/
+#instance/
 .webassets-cache
 
 # Scrapy stuff:
@@ -82,11 +82,11 @@ instance/
 .idea
 
 # Auto generate documentation
-docs/en/_build/
-docs/zh_cn/_build/
+#docs/en/_build/
+#docs/zh_cn/_build/
 
 # .zip
 *.zip
 
 # sft config ignore list
-configs/sft_cfg/*B_*
+#configs/sft_cfg/*B_*
