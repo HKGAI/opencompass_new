@@ -30,7 +30,7 @@ dataset_abbrs=[
 'mbpp',
 
 '------ World Knowledge -----',#TODO 添加NaturalQuestions 和 两者的0-shot 1-shot 5-shot 64-shot
-
+'nq',
 'triviaqa',
 
 '--- Reading Comprehension --',#TODO 添加0-shot 1-shot 4-shot 5-shot 和 QUAC 0-shot 1-shot

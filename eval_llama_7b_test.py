@@ -17,6 +17,7 @@ with read_base():
     from .configs.datasets.humaneval.humaneval_gen_a82cae import humaneval_datasets
     from .configs.datasets.mbpp.mbpp_gen_1e1056 import mbpp_datasets
     # World Knowledge           need NaturalQuestions
+    from .configs.datasets.nq.nq_gen_0356ec import nq_datasets
     from .configs.datasets.triviaqa.triviaqa_gen_0356ec import triviaqa_datasets
     
     # Reading Comprehension       need QUAC
