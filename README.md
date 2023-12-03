@@ -25,7 +25,7 @@ conda activate opencompass
 mkdir evaluation
 cd evaluation
 # 下载
-git clone https://github.com/HKGAI/opencompass.git opencompass
+git clone https://github.com/HKGAI/EmergentAbilityEval.git opencompass
 cd opencompass
 ```
 
