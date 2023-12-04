@@ -1,4 +1,4 @@
-import sys
+import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, List, Optional, Union
 
@@ -80,37 +80,6 @@ class MiniMax(BaseAPIModel):
                              [max_out_len] * len(inputs)))
         self.flush()
         return results
-
-    def flush(self):
-        """Flush stdout and stderr when concurrent resources exists.
-
-        When use multiproessing with standard io rediected to files, need to
-        flush internal information for examination or log loss when system
-        breaks.
-        """
-        if hasattr(self, 'tokens'):
-            sys.stdout.flush()
-            sys.stderr.flush()
-
-    def acquire(self):
-        """Acquire concurrent resources if exists.
-
-        This behavior will fall back to wait with query_per_second if there are
-        no concurrent resources.
-        """
-        if hasattr(self, 'tokens'):
-            self.tokens.acquire()
-        else:
-            self.wait()
-
-    def release(self):
-        """Release concurrent resources if acquired.
-
-        This behavior will fall back to do nothing if there are no concurrent
-        resources.
-        """
-        if hasattr(self, 'tokens'):
-            self.tokens.release()
 
     def _generate(
         self,
@@ -200,7 +169,8 @@ class MiniMax(BaseAPIModel):
                     or response.status_code == 1039
                     or response.status_code == 2013):
                 print(response.text)
-                return ''
+                time.sleep(1)
+                continue
             print(response)
             max_num_retries += 1
 
