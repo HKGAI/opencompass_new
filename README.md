@@ -39,6 +39,8 @@ pip install -e .
 
 ```bash
 wget https://github.com/open-compass/opencompass/releases/download/0.1.1/OpenCompassData.zip
+# 下面的是0.1.8数据集，可供尝试
+wget https://github.com/open-compass/opencompass/releases/download/0.1.8.rc1/OpenCompassData-core-20231110.zip
 unzip OpenCompassData.zip
 ```
 
