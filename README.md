@@ -38,10 +38,10 @@ pip install -e .
 4. 下载数据集到 data/ 
 
 ```bash
-wget https://github.com/open-compass/opencompass/releases/download/0.1.1/OpenCompassData.zip
-# 下面的是0.1.8数据集，可供尝试
+# wget https://github.com/open-compass/opencompass/releases/download/0.1.1/OpenCompassData.zip
+# 下载0.1.8数据集
 wget https://github.com/open-compass/opencompass/releases/download/0.1.8.rc1/OpenCompassData-core-20231110.zip
-unzip OpenCompassData.zip
+unzip OpenCompassData-core-20231110.zip
 ```
 
 5. 下载humaneval数据集
