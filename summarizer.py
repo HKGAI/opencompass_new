@@ -29,7 +29,7 @@ dataset_abbrs=[
 'openai_humaneval',
 'mbpp',
 
-'------ World Knowledge -----',#TODO 添加NaturalQuestions 和 两者的0-shot 1-shot 5-shot 64-shot
+'------ World Knowledge -----',#TODO 添加两者的0-shot 1-shot 5-shot 64-shot
 'nq',
 'triviaqa',
 
