@@ -11,7 +11,7 @@ with read_base():
     from .configs.datasets.ARC_e.ARC_e_ppl_2ef631 import ARC_e_datasets
     from .configs.datasets.ARC_c.ARC_c_ppl_2ef631 import ARC_c_datasets
     from .configs.datasets.obqa.obqa_ppl_6aac9e import obqa_datasets
-    from .configs.datasets.commonsenseqa.commonsenseqa_ppl_5545e2 import commonsenseqa_datasets
+    from .configs.datasets.commonsenseqa.commonsenseqa_ppl_e51e32 import commonsenseqa_datasets
     from .configs.datasets.mmlu.mmlu_ppl_ac766d import mmlu_datasets
     # Code Generation
     from .configs.datasets.humaneval.humaneval_gen_a82cae import humaneval_datasets
