@@ -6,6 +6,7 @@
 
 - 📈 对齐LLaMA 2的Evaluation此外加一下中文的一些Evaluation(主要是CMMLU和C-Eval)
 - 📑 评价指标参考https://arxiv.org/pdf/2307.09288.pdf A2.2部分
+- 📦 017机器容器：https://mgf127vt7ge.sg.larksuite.com/docx/YsfIdjeh5oqmM5xiKFll274Hg4e?from=from_copylink
 
 更多详细信息请参阅lark文档：https://mgf127vt7ge.sg.larksuite.com/docx/J4W4djHR6oYPulx2mAQlhNZtgSd
 
