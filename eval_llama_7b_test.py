@@ -1,6 +1,7 @@
 from mmengine.config import read_base
 
 with read_base():
+    from .configs.lark import lark_bot_url
     ########################DATASET##################
     # Standard Benchmarks
     from .configs.datasets.SuperGLUE_BoolQ.SuperGLUE_BoolQ_ppl import BoolQ_datasets
@@ -11,7 +12,7 @@ with read_base():
     from .configs.datasets.ARC_e.ARC_e_ppl import ARC_e_datasets
     from .configs.datasets.ARC_c.ARC_c_ppl import ARC_c_datasets
     from .configs.datasets.obqa.obqa_ppl import obqa_datasets
-    from .configs.datasets.commonsenseqa.commonsenseqa_ppl import commonsenseqa_datasets
+    from .configs.datasets.commonsenseqa.commonsenseqa_ppl_e51e32 import commonsenseqa_datasets
     from .configs.datasets.mmlu.mmlu_ppl import mmlu_datasets
     # Code Generation
     from .configs.datasets.humaneval.humaneval_gen import humaneval_datasets
