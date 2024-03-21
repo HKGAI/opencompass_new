@@ -10,7 +10,7 @@ from opencompass.partitioners import MultimodalNaivePartitioner
 from opencompass.registry import PARTITIONERS, RUNNERS, build_from_cfg
 from opencompass.runners import SlurmRunner
 from opencompass.summarizers import DefaultSummarizer
-from opencompass.utils import LarkReporter, get_logger
+from opencompass.utils import LarkReporter, get_logger, model_abbr_from_cfg
 from opencompass.utils.run import (exec_mm_infer_runner, fill_eval_cfg,
                                    fill_infer_cfg, get_config_from_arg)
 
@@ -245,7 +245,9 @@ def main():
     if not args.lark:
         cfg['lark_bot_url'] = None
     elif cfg.get('lark_bot_url', None):
-        content = f'{getpass.getuser()}\'s task has been launched!'
+        model_cfgs = cfg['models']
+        model_abbrs = [model_abbr_from_cfg(model) for model in model_cfgs]
+        content = f'{model_abbrs} task has been launched!'
         LarkReporter(cfg['lark_bot_url']).post(content)
 
     if args.mode in ['all', 'infer']:

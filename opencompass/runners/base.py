@@ -28,6 +28,7 @@ class BaseRunner:
         else:
             self.lark_reporter = None
 
+
     def __call__(self, tasks: List[Dict[str, Any]]):
         """Launch multiple tasks and summarize the results.
 
@@ -36,7 +37,9 @@ class BaseRunner:
                 Partitioner.
         """
         status = self.launch(tasks)
-        self.summarize(status)
+        status_list = list(status)  # 将生成器转换为列表
+        self.summarize(status_list)  # 使用列表作为参数调用summarize
+        # self.summarize(status)
 
     @abstractmethod
     def launch(self, tasks: List[Dict[str, Any]]) -> List[Tuple[str, int]]:
@@ -77,6 +80,6 @@ class BaseRunner:
                 content = f'{getpass.getuser()}\'s '
                 content += f'{self.task_cfg.type} tasks finished. '
                 content += f'{num_succeeded} tasks succeeded.'
-                self.lark_reporter.post(title='Great news: all tasks '
-                                        'finished!',
-                                        content=content)
+                # self.lark_reporter.post(title='Great news: all tasks '
+                #                         'finished!',
+                #                         content=content)

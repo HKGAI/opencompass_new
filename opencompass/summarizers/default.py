@@ -286,6 +286,24 @@ class DefaultSummarizer:
         with open(output_csv_path, 'w', encoding='utf-8') as f:
             f.write('\n'.join([','.join(row) for row in table]) + '\n')
         self.logger.info(f'write csv to {osp.abspath(output_csv_path)}')
+    
+    def read_summary_file(self, summary_file_path: str) -> str:
+        """读取summary文件的内容。
+
+        Args:
+            summary_file_path (str): Summary文件的路径。
+
+        Returns:
+            str: 文件内容。
+        """
+        try:
+            with open(summary_file_path, 'r') as file:
+                content = file.read()
+            return content
+        except FileNotFoundError:
+            get_logger().error(f"Summary file {summary_file_path} not found.")
+            return ""
+
 
     def summarize(
         self,
@@ -311,7 +329,17 @@ class DefaultSummarizer:
         # output to .text / .csv files
         self._output_to_file(output_path, time_str, table, raw_txts)
 
+        if output_path is None:
+            output_path = osp.join(self.work_dir, 'summary', f'summary_{time_str}.txt')
+            output_csv_path = osp.join(self.work_dir, 'summary', f'summary_{time_str}.csv')
+        else:
+            output_csv_path = output_path.replace('.txt', '.csv')
+
+        summary_content = self.read_summary_file(output_path)
+
+
         if self.lark_reporter:
-            content = f'{getpass.getuser()} 的'
+            content = f'{self.model_abbrs} 的'
             content += f'详细评测汇总已输出至 {osp.abspath(output_path)}'
+            content += "\n\nSummary:\n" + summary_content
             self.lark_reporter.post(content)
