@@ -64,6 +64,7 @@ cd ..
 ```Bash
 #命令行方式
 python run.py eval_llama_7b_test.py -p slurm_conifg.py
+nohup python run.py eval_llama_7b_test.py -l > xxx_log 2>&1 # 使用lark bot
 #脚本方式
 ./eval_llama.sh
 ```
