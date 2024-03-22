@@ -335,7 +335,7 @@ class DefaultSummarizer:
         else:
             output_csv_path = output_path.replace('.txt', '.csv')
 
-        summary_content = self.read_summary_file(output_path)
+        summary_content = self.read_summary_file(output_csv_path)
 
 
         if self.lark_reporter:
