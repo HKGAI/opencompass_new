@@ -2,13 +2,30 @@ import time
 import subprocess
 import os
 import argparse
+from pprint import pprint
+
+def get_folder_size(Folderpath):
+    size=0
+    for path, dirs, files in os.walk(Folderpath):
+        for f in files:
+            fp = os.path.join(path, f)
+            size += os.path.getsize(fp)
+    return size
+
+def dump_model_configs(config_list, config_file='hf_llama_7b.py',):
+    with open(config_file, 'w') as file:
+        print(f'writing {len(config_list)} models to hf_llama_7b.py:')
+        pprint(config_list)
+        file.write('from opencompass.models import HuggingFaceCausalLM\n\n')
+        file.write('models = ' + repr(config_list).replace(", ", ",\n").replace('}','}\n') + '\n')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--detect_new_after_finish', action='store_true', help='detect new ckpt after the current evaluation is finished')
+    parser.add_argument('-s', '--serial', action='store_true', help='detect new ckpt after the current evaluation is finished')
     args = parser.parse_args()
 
-    # run with: nohup python auto_monitor_eval.py > auto_monitor_eval.master.log 2>&1 &
+    # run with: nohup python -u auto_monitor_eval.py > auto_monitor_eval.master_on_dgx-021.log 2>&1 &
+    # run with: nohup python -u auto_monitor_eval.py -s > auto_monitor_eval.master_on_dgx-021.log 2>&1 &
 
     MODEL_TEMPLATE = {
             'type': 'HuggingFaceCausalLM',
@@ -55,6 +72,8 @@ if __name__ == '__main__':
     ]
     initial_files = sorted(initial_files, key=lambda x: float(x.replace('B','')), reverse=False)
 
+    TESTED_MODELS = []
+
     print('initial_files:', initial_files)
     while True:
         # watch new generated file in the folder
@@ -62,6 +81,11 @@ if __name__ == '__main__':
         current_files = [
             file for file in current_files 
             if file.endswith('B') and float(file.replace('B',''))>=MINIMUM_TOKEN_TO_TEST and file not in SKIP_TOKEN_TO_TEST
+        ]
+        # exclude folder that smaller than 10GB
+        current_files = [
+            file for file in current_files 
+            if get_folder_size(os.path.join(hf_ckpt_path, file)) > 12*(1024**3)
         ]
         current_files = sorted(current_files, key=lambda x: float(x.replace('B','')), reverse=False)
         print('current_files:', current_files)
@@ -72,7 +96,7 @@ if __name__ == '__main__':
             for file in new_files:
                 print(os.path.join(hf_ckpt_path, file))
 
-            model_configs = []
+            model_configs = [] # new detected checkpoints
             for file in new_files:
                 ckpt_to_eval = os.path.join(hf_ckpt_path,file)
                 # print(f'evaluating {ckpt_to_eval}')
@@ -89,11 +113,7 @@ if __name__ == '__main__':
                     # upadte the minimum
                     MINIMUM_TOKEN_TO_TEST = trained_token if trained_token >= MINIMUM_TOKEN_TO_TEST else MINIMUM_TOKEN_TO_TEST
 
-            # write to configs
-            with open('hf_llama_7b.py', 'w') as file:
-                print(f'writing {len(model_configs)} models to hf_llama_7b.py:', model_configs)
-                file.write('from opencompass.models import HuggingFaceCausalLM\n\n')
-                file.write('models = ' + repr(model_configs).replace(", ", ",\n") + '\n')
+            TESTED_MODELS = TESTED_MODELS + model_configs
             
             print(f'##### Submitted Evaluation on checkpoint(s): #####')
             print("\n".join(new_files))
@@ -102,15 +122,25 @@ if __name__ == '__main__':
             # get the current date time
             # bash_command = f"nohup python run.py eval_llama_7b_test.py > {eval_log_file} 2>&1 &"
             # bash_command = f"nohup python test_print.py > {eval_log_file} 2>&1 &"
-            if args.detect_new_after_finish:
-                bash_command = f"python run.py eval_llama_7b_test.py -l"
+
+            # write the new checkpoints to configs
+            dump_model_configs(model_configs, 'hf_llama_7b.py')
+            if args.serial:
+                bash_command = f"python -u run.py eval_llama_7b_test.py -l -r 20240324_101010"
+                print(f'run command:', bash_command)
+                subprocess.run(bash_command.split())
+
+                print("#"*10 + "\nRe-scan the previous failed evalution\n" + "#"*10)
+                dump_model_configs(TESTED_MODELS, 'hf_llama_7b.py')
+                bash_command = f"python -u run.py eval_llama_7b_test.py -l -r 20240324_101010"
+                print(f'run command:', bash_command)
+                subprocess.run(bash_command.split())
             else:
                 current_date_time = time.strftime("%Y%m%d-%H%M%S")
                 eval_log_file = f'auto_eval_{current_date_time}.log'
                 bash_command = f"bash auto_submit.sh {eval_log_file}"
-
-            print(f'run command:', bash_command)
-            subprocess.run(bash_command.split())
+                print(f'run command:', bash_command)
+                subprocess.run(bash_command.split())
 
             # Update the initial file list
             print('update tested file list')
@@ -125,7 +155,7 @@ if __name__ == '__main__':
                 break
         else:
             print('no new file, hang')
-            time.sleep(300)
+            time.sleep(600)
 
     # mannually run
     # nohup python run.py eval_llama_7b_test.py > eval_659.95B.log 2>&1 &
