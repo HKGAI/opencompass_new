@@ -29,8 +29,8 @@ if __name__ == '__main__':
 
     MODEL_TEMPLATE = {
             'type': 'HuggingFaceCausalLM',
-            'abbr': 'exp2.6/20.00B',
-            'path': '/workspace/aifs4su/code/checkpoints/hkg_7b_nl_tp2_pp1_mb1_gb1024_gas4/pt2.6/hf_ckpt/20.00B',
+            'abbr': 'exp2.6_phase2/20.00B',
+            'path': '/workspace/aifs4su/code/checkpoints/hkg_7b_nl_tp2_pp1_mb1_gb1024_gas4/pt2.6_phase2/hf_ckpt/20.00B',
             'tokenizer_path': '/workspace/aifs4su/code/checkpoints/hkg_7b_nl_tp2_pp1_mb1_gb1024_gas4/pt2.6/hf_ckpt/hkg_hk50B_hf',
             'tokenizer_kwargs': {
                 'padding_side': 'left',
@@ -52,19 +52,19 @@ if __name__ == '__main__':
 
     MAXIMUM_RUN_HOUR = 300
     # megatron_ckpt_path = 'checkpoints/hkg_7b_nl_tp2_pp1_mb1_gb1024_gas4/pt2.6/checkpoint'
-    hf_ckpt_path = '/workspace/aifs4su/code/checkpoints/hkg_7b_nl_tp2_pp1_mb1_gb1024_gas4/pt2.6/hf_ckpt'
+    hf_ckpt_path = '/workspace/aifs4su/code/checkpoints/hkg_7b_nl_tp2_pp1_mb1_gb1024_gas4/pt2.6_phase2/hf_ckpt'
     model_config_file = "/workspace/opencompass_new/hf_llama_7b.py"
 
-    MINIMUM_TOKEN_TO_TEST = 600.0
+    MINIMUM_TOKEN_TO_TEST = 0.0
     MAXIMUM_TOKEN_TO_TEST = float('inf')
-    SKIP_TOKEN_TO_TEST = ['959.93B']
+    SKIP_TOKEN_TO_TEST = []
     # Record the start time
     start_time = time.time()
 
 
 
     # initial_files = []
-    MAX_INIT_TO_ADD = 600.0
+    MAX_INIT_TO_ADD = 0.0
     initial_files = os.listdir(hf_ckpt_path)
     initial_files = [
         file for file in initial_files 
@@ -73,6 +73,8 @@ if __name__ == '__main__':
     initial_files = sorted(initial_files, key=lambda x: float(x.replace('B','')), reverse=False)
 
     TESTED_MODELS = []
+
+    RESULT_FOLDER = '20240404_exp2.6phase2_auto'
 
     print('initial_files:', initial_files)
     while True:
@@ -126,13 +128,7 @@ if __name__ == '__main__':
             # write the new checkpoints to configs
             dump_model_configs(model_configs, 'hf_llama_7b.py')
             if args.serial:
-                bash_command = f"python -u run.py eval_llama_7b_test.py -l -r 20240324_101010"
-                print(f'run command:', bash_command)
-                subprocess.run(bash_command.split())
-
-                print("#"*10 + "\nRe-scan the previous failed evalution\n" + "#"*10)
-                dump_model_configs(TESTED_MODELS, 'hf_llama_7b.py')
-                bash_command = f"python -u run.py eval_llama_7b_test.py -l -r 20240324_101010"
+                bash_command = f"python -u run.py eval_llama_7b_test.py -l -r {RESULT_FOLDER}"
                 print(f'run command:', bash_command)
                 subprocess.run(bash_command.split())
             else:
@@ -156,6 +152,12 @@ if __name__ == '__main__':
         else:
             print('no new file, hang')
             time.sleep(600)
+            if len(TESTED_MODELS) > 1:
+                print("#"*10 + "\nRe-scan the previous failed evalution\n" + "#"*10)
+                dump_model_configs(TESTED_MODELS, 'hf_llama_7b.py')
+                bash_command = f"python -u run.py eval_llama_7b_test.py -l -r {RESULT_FOLDER}"
+                print(f'run command:', bash_command)
+                subprocess.run(bash_command.split())
 
     # mannually run
     # nohup python run.py eval_llama_7b_test.py > eval_659.95B.log 2>&1 &
